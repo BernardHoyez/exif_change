@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a73e8">
+  <meta name="description" content="PWA pour visualiser et modifier les données de géolocalisation EXIF d'une photo">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>exif_change</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>exif_change</h1>
+    <p class="subtitle">Géolocalisation EXIF</p>
+  </header>
+
+  <main>
+    <!-- Zone d'import -->
+    <section id="import-section" class="card">
+      <label for="file-input" class="drop-zone" id="drop-zone">
+        <span class="drop-icon">📷</span>
+        <span>Glisser une photo ici<br>ou cliquer pour sélectionner</span>
+        <span class="formats">JPEG · TIFF · HEIC · WebP · RAW</span>
+        <input type="file" id="file-input" accept="image/*,.heic,.heif,.dng,.cr2,.nef,.arw,.orf,.rw2" hidden>
+      </label>
+    </section>
+
+    <!-- Aperçu photo -->
+    <section id="photo-section" class="card hidden">
+      <div class="photo-container">
+        <img id="photo-preview" alt="Aperçu de la photo">
+      </div>
+      <p id="filename" class="filename"></p>
+    </section>
+
+    <!-- Infos EXIF GPS originales -->
+    <section id="exif-section" class="card hidden">
+      <h2>Données de géolocalisation originales</h2>
+      <div id="exif-gps">
+        <p id="no-gps" class="msg-warn hidden">Pas de données de géolocalisation</p>
+        <div id="gps-info" class="hidden">
+          <p>Latitude : <strong id="orig-lat"></strong></p>
+          <p>Longitude : <strong id="orig-lon"></strong></p>
+        </div>
+      </div>
+      <div id="map-orig" class="map-container hidden"></div>
+    </section>
+
+    <!-- Édition -->
+    <section id="edit-section" class="card hidden">
+      <h2>Modifier la position</h2>
+      <div class="layer-selector">
+        <label>Fond de carte :
+          <select id="basemap">
+            <option value="osm">OpenStreetMap</option>
+            <option value="ign-plan">IGN Plan V2</option>
+            <option value="ign-ortho">IGN BD Ortho</option>
+          </select>
+        </label>
+      </div>
+      <div id="map-edit" class="map-container"></div>
+      <div class="coords-edit">
+        <label>Latitude
+          <input type="number" id="edit-lat" step="0.0001" placeholder="XX.XXXX">
+        </label>
+        <label>Longitude
+          <input type="number" id="edit-lon" step="0.0001" placeholder="YYY.YYYY">
+        </label>
+      </div>
+      <p class="hint">Déplacez le marqueur ou saisissez les coordonnées (degrés décimaux)</p>
+    </section>
+
+    <!-- Actions -->
+    <section id="actions-section" class="card hidden">
+      <button id="btn-save" class="btn primary">Enregistrer la photo avec localisation</button>
+      <p id="save-note" class="hint">Nom de fichier : <span id="out-name"></span></p>
+      <p id="format-warn" class="msg-warn hidden">L'écriture EXIF GPS n'est supportée que pour les fichiers JPEG. Les autres formats seront téléchargés sans modification EXIF.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>exif_change · PWA · traitement local (aucune donnée envoyée)</p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
